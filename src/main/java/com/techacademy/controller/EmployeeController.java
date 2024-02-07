@@ -71,7 +71,6 @@ public class EmployeeController {
                     ErrorMessage.getErrorValue(ErrorKinds.BLANK_ERROR));
 
             return create(employee);
-
         }
 
         // 入力チェック
@@ -110,6 +109,56 @@ public class EmployeeController {
             return detail(code, model);
         }
 
+        return "redirect:/employees";
+    }
+
+    // 従業員更新画面
+    @GetMapping(value = "/{code}/update")
+    public String edit(@PathVariable String code, Model model) {
+        model.addAttribute("employee", employeeService.findByCode(code));
+        return "employees/update";
+    }
+
+    // 従業員更新処理
+    @PostMapping(value = "/{code}/update")
+    public String update(@PathVariable String code, @Validated Employee employee, BindingResult res, Model model) {
+
+        // 氏名のチェック
+        if (employee.getName() == null || employee.getName().isEmpty()) {
+            // 入力が空の場合、エラーメッセージを表示
+            model.addAttribute("nameError", "値を入力してください");
+            return "employees/update";
+
+        } else if (employee.getName().length() > 20) {
+            // 桁数が20文字を超える場合、エラーメッセージを設定
+            model.addAttribute("nameError", "20文字以下で入力してください");
+            return "employees/update";
+        }
+
+        // パスワードが空の場合
+        if ("".equals(employee.getPassword())) {
+            // パスワードの更新を行わず、その他の従業員情報のみを更新
+            ErrorKinds result = employeeService.updateEmployeeInfoWithoutPassword(employee);
+            if (result != ErrorKinds.SUCCESS) {
+                // 更新が失敗した場合、更新画面でエラーメッセージを表示
+                model.addAttribute(ErrorMessage.getErrorName(result), ErrorMessage.getErrorValue(result));
+                return "employees/update";
+            }
+        } else {
+            // パスワードが空でない場合、従業員情報とパスワードの更新を行う
+            ErrorKinds result = employeeService.save(employee);
+            if (result != ErrorKinds.SUCCESS) {
+                // 更新が失敗した場合、更新画面でエラーメッセージを表示
+                model.addAttribute(ErrorMessage.getErrorName(result), ErrorMessage.getErrorValue(result));
+                return "employees/update";
+            }
+        }
+        // 入力チェック
+        if (res.hasErrors()) {
+            return "employees/update";
+        }
+
+        // 更新が成功した場合は従業員一覧画面にリダイレクト
         return "redirect:/employees";
     }
 

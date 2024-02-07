@@ -118,5 +118,26 @@ public class EmployeeService {
         int passwordLength = employee.getPassword().length();
         return passwordLength < 8 || 16 < passwordLength;
     }
+ // 従業員情報のみを更新するメソッド
+    @Transactional
+    public ErrorKinds updateEmployeeInfoWithoutPassword(Employee employee) {
+        // パスワードを除いた従業員情報の更新を行う
+        try {
+            Employee existingEmployee = findByCode(employee.getCode());
+            if (existingEmployee == null) {
+                return ErrorKinds.NOT_FOUND_ERROR;
+            }
+            // パスワードを除いた情報のみを更新
+            existingEmployee.setName(employee.getName());
+            existingEmployee.setRole(employee.getRole());
+            existingEmployee.setUpdatedAt(LocalDateTime.now());
+            employeeRepository.save(existingEmployee);
+            return ErrorKinds.SUCCESS;
+        } catch (Exception e) {
+            // エラーが発生した場合はエラーコードを返す
+            return ErrorKinds.UPDATE_ERROR;
+        }
+    }
+
 
 }

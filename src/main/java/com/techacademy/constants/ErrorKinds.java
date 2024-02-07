@@ -21,6 +21,11 @@ public enum ErrorKinds {
     // チェックOK
     CHECK_OK,
     // 正常終了
-    SUCCESS;
+    SUCCESS,
+    //従業員が存在しない 追加
+    NOT_FOUND_ERROR,
+    //エラー発生　追加
+    UPDATE_ERROR,
+
 
 }
