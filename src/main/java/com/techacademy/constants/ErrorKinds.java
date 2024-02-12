@@ -26,6 +26,10 @@ public enum ErrorKinds {
     NOT_FOUND_ERROR,
     //エラー発生　追加
     UPDATE_ERROR,
-
-
+    // 入力値が空であるエラー 追加
+    VALUE_BLANK_ERROR,
+    // 入力値が100文字を超えているエラー 追加
+    VALUE_EXCEED_100_ERROR,
+    // 入力値が600文字を超えているエラー 追加
+    VALUE_EXCEED_600_ERROR
 }

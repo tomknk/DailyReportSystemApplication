@@ -2,10 +2,12 @@
 package com.techacademy.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.validator.constraints.Length;
 
+import javax.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -14,11 +16,15 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
+import javax.persistence.OneToMany;
 
 @Data
 @Entity
 @Table(name = "employees")
 @SQLRestriction("delete_flg = false")
+
+
+
 public class Employee {
 
     public static enum Role {
@@ -35,14 +41,18 @@ public class Employee {
         }
     }
 
-    // ID
+    // 社員番号
     @Id
     @Column(length = 10)
     @NotEmpty
     @Length(max = 10)
     private String code;
 
-    // 名前
+    // 社員番号　Reportsとの関連付け
+    @OneToMany(mappedBy = "employee", cascade = {CascadeType.ALL})
+    private List<Reports> reportList;
+
+    // 氏名
     @Column(length = 20, nullable = false)
     @NotEmpty
     @Length(max = 20)
@@ -68,5 +78,6 @@ public class Employee {
     // 更新日時
     @Column(nullable = false)
     private LocalDateTime updatedAt;
+
 
 }
