@@ -7,7 +7,7 @@ import java.util.List;
 import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.validator.constraints.Length;
 
-import javax.persistence.CascadeType;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -16,7 +16,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
-import javax.persistence.OneToMany;
+import jakarta.persistence.OneToMany;
 
 @Data
 @Entity
@@ -48,9 +48,9 @@ public class Employee {
     @Length(max = 10)
     private String code;
 
-    // 社員番号　Reportsとの関連付け
+    // 社員番号　Reportとの関連付け
     @OneToMany(mappedBy = "employee", cascade = {CascadeType.ALL})
-    private List<Reports> reportList;
+    private List<Report> reportList;
 
     // 氏名
     @Column(length = 20, nullable = false)

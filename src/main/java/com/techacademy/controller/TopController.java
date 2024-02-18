@@ -19,10 +19,10 @@ public class TopController {
     public String top(Model model) {
 
         // 修正前:従業員一覧画面「/employees」にリダイレクト
-        return "redirect:/employees";
+        //return "redirect:/employees";
 
         // 問題なければ日報一覧画面「/reports」にリダイレクトに変更する
-        //return "redirect:/reports";
+        return "redirect:/reports";
     }
 
 }
