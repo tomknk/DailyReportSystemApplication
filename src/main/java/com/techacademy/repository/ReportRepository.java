@@ -11,4 +11,3 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
     List<Report> findByEmployeeAndReportDate(Employee employee, LocalDate reportDate);
 }
 
-

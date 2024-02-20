@@ -62,4 +62,8 @@ public class ErrorMessage {
     public static String getErrorValue(ErrorKinds errorKinds) {
         return errorMessageMap.get(errorKinds).get(1);
     }
+    //他のクラスからエラーメッセージを取得できるようにする
+    public static String getErrorMessage(ErrorKinds errorKind) {
+        return errorMessageMap.get(errorKind).get(1);
+    }
 }

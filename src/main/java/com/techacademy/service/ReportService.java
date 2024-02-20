@@ -37,7 +37,7 @@ public class ReportService {
         reportRepository.deleteById(id);
     }
 
-    // 日報の重複チェック
+    // 日報新規登録処理 日報の重複チェック
     public boolean isDuplicateReportDate(LocalDate reportDate, Employee employee) {
         // ログインユーザーの日報リストを取得
         List<Report> reports = reportRepository.findByEmployeeAndReportDate(employee, reportDate);
@@ -52,7 +52,6 @@ public class ReportService {
                 employee = existingEmployee;
             } else {
                 // 既存のレポートの従業員情報がnullの場合、エラー処理を行う
-                System.err.println("Employee information is null in existing report.");
                 return false; // 重複していないとみなす
             }
         }

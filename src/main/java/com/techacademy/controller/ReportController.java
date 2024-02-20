@@ -4,15 +4,18 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.techacademy.constants.ErrorKinds;
+import com.techacademy.constants.ErrorMessage;
 import com.techacademy.entity.Employee;
 import com.techacademy.entity.Employee.Role;
 import com.techacademy.entity.Report;
@@ -129,7 +132,8 @@ public class ReportController {
     // 日報更新処理
     @PostMapping("/{id}/update")
     public String update(@PathVariable("id") Long id, @Validated @ModelAttribute Report report, BindingResult result,
-            RedirectAttributes redirectAttributes) {
+            Model model) {
+
         if (result.hasErrors()) {
             return "reports/update";
         }
@@ -148,11 +152,21 @@ public class ReportController {
         // 更新日時を更新
         existingReport.setUpdatedAt(LocalDateTime.now());
 
-        // 同じ日付の日報が存在するかチェック
-        if (reportService.checkDuplicateDate(existingReport)) {
+     // ログインユーザーの情報を取得
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            String loggedInUserName = userDetails.getUsername();
+            Employee employee = employeeService.findByCode(loggedInUserName);
             // エラーメッセージを設定して更新画面にリダイレクト
-            redirectAttributes.addFlashAttribute("duplicateDateError", "既に登録されている日付です");
-            return "redirect:/reports/{id}/update";
+            if (reportService.checkDuplicateDate(existingReport)) {
+                model.addAttribute(ErrorMessage.getErrorName(ErrorKinds.DATECHECK_ERROR),
+                        ErrorMessage.getErrorValue(ErrorKinds.DATECHECK_ERROR));
+                // 氏名のデータをセット
+                model.addAttribute("employeeName", employee.getName());
+                model.addAttribute("report", existingReport);
+                return "reports/update";
+            }
         }
 
         // 日報保存

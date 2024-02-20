@@ -18,55 +18,58 @@
                     <div class="col-xl-12">
                         <div class="card">
                             <div class="card-body">
-                                <form th:action="@{'/reports/' + ${report.id} + '/update'}" th:object="${report}" th:method="post">
+                                <form th:action="@{'/reports/' + ${report.id} + '/update'}" th:object="${report}"
+                                    th:method="post">
                                     <div class="wizard wizard-success mb-4">
                                         <div class="row mb-3">
                                             <div class="col-md-7">
                                                 <label class="form-label" for="reportDate">日付</label>
                                                 <input class="form-control" type="date" th:field="*{reportDate}"
                                                     id="reportDate" name="reportDate">
+                                                <!-- 日付フィールドのバリデーションエラーメッセージ表示 -->
                                                 <span class="text-danger" th:if="${#fields.hasErrors('reportDate')}"
                                                     th:errors="*{reportDate}"></span>
-                                                <!-- 日付が重複している場合のエラーメッセージ -->
-                                                <span class="text-danger" th:if="${duplicateDateError}">[[${duplicateDateError}]]</span>
+                                                <!-- 日付が重複している場合のエラーメッセージ表示 -->
+                                                <span th:if="${reportDateError != null}" th:text="${reportDateError}"
+                                                    class="text-danger"></span>
                                             </div>
                                         </div>
                                         <div class="row mb-3">
-                                            <div class="col-md-7">
-                                                <label class="form-label" for="name">氏名</label>
-                                                <div th:if="${report.employee != null}">
-                                                    <p class="form-control-static" th:text="${report.employee.name}">
-                                                    </p>
+                                                <div class="col-md-7">
+                                                    <label class="form-label" for="name">氏名</label>
+                                                    <div th:if="${report.employee != null}">
+                                                        <p class="form-control-static"th:text="${report.employee.name}">
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-3">
+                                                <div class="col-md-7">
+                                                    <label class="form-label" for="title">タイトル</label>
+                                                    <input class="form-control" type="text" th:field="*{title}"
+                                                        th:errorclass="${#fields.hasErrors('title')} ? 'err' : ''"
+                                                        id="title">
+                                                    <span th:if="${#fields.hasErrors('title')}" th:errors="*{title}"
+                                                        class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-3">
+                                                <div class="col-md-7">
+                                                    <label class="form-label" for="content">内容</label>
+                                                    <textarea class="form-control" th:field="*{content}"
+                                                        th:errorclass="${#fields.hasErrors('content')} ? 'err' : ''"
+                                                        id="content"></textarea>
+                                                    <span th:if="${#fields.hasErrors('content')}" th:errors="*{content}"
+                                                        class="text-danger"></span>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="row mb-3">
+                                        <div class="row">
                                             <div class="col-md-7">
-                                                <label class="form-label" for="title">タイトル</label>
-                                                <input class="form-control" type="text" th:field="*{title}"
-                                                    th:errorclass="${#fields.hasErrors('title')} ? 'err' : ''"
-                                                    id="title">
-                                                <span th:if="${#fields.hasErrors('title')}" th:errors="*{title}"
-                                                    class="text-danger"></span>
+                                                <button type="submit" class="btn btn-primary">更新</button>
+                                                <a th:href="@{/reports}" class="btn btn-primary">戻る</a>
                                             </div>
                                         </div>
-                                        <div class="row mb-3">
-                                            <div class="col-md-7">
-                                                <label class="form-label" for="content">内容</label>
-                                                <textarea class="form-control" th:field="*{content}"
-                                                    th:errorclass="${#fields.hasErrors('content')} ? 'err' : ''"
-                                                    id="content"></textarea>
-                                                <span th:if="${#fields.hasErrors('content')}" th:errors="*{content}"
-                                                    class="text-danger"></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-7">
-                                            <button type="submit" class="btn btn-primary">更新</button>
-                                            <a th:href="@{/reports}" class="btn btn-primary">戻る</a>
-                                        </div>
-                                    </div>
                                 </form>
                             </div>
                         </div>
